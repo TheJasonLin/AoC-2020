@@ -1,12 +1,12 @@
 // AoC2020.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
-#include "Day1.cpp"
+#include "Day2.h"
 
 using namespace std;
 
 int main()
 {
-    run();
+    Day2::Run2();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
