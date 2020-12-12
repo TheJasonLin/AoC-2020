@@ -11,5 +11,6 @@ class InputParser
 public:
 	static vector<string> GetStrings(string fileName);
 	static vector<int> GetInts(string fileName);
+	static vector<long long> GetLongLongs(string fileName);
 };
 

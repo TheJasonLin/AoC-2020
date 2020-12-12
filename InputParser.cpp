@@ -33,3 +33,17 @@ vector<int> InputParser::GetInts(string fileName)
 
 	return out;
 }
+
+std::vector<long long> InputParser::GetLongLongs(string fileName)
+{
+	vector<long long> out;
+
+	auto strings = GetStrings(fileName);
+
+	for (auto str : strings) {
+		int i = stoll(str);
+		out.push_back(i);
+	}
+
+	return out;
+}
