@@ -11,12 +11,24 @@ public:
 
 	Type type;
 	int value;
+	string source;
 
 	Instruction(string in);
-	Instruction(Type type, int value):
-		type(type),
-		value(value)
+};
+
+class Waypoint
+{
+public:
+	int x;
+	int y;
+	Waypoint(int x, int y):
+		x(x),
+		y(y)
 	{}
+
+	void Apply(Instruction i, int xRel, int yRel);
+	static int GetCounterClockwiseAngle(Instruction i);
+	void ApplyAngle(int angle, int xRel, int yRel);
 };
 
 class Ferry
@@ -24,16 +36,16 @@ class Ferry
 public:
 	int x;
 	int y;
-	int angle;
+	Waypoint waypoint;
 
-	Ferry() :
+	Ferry():
 		x(0),
 		y(0),
-		angle(0)
-	{ }
+		waypoint(Waypoint(10, 1))
+	{
+	}
 
 	void Apply(Instruction i);
-	Instruction GetCardinalInstructionFromAngle(int value);
 };
 
 class Day12

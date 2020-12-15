@@ -2,6 +2,7 @@
 
 Instruction::Instruction(string in)
 {
+	source = in;
 	static auto e = regex("([A-Z])([0-9]+)");
 
 	static map<char, Type> typeMapping = {
@@ -23,58 +24,13 @@ Instruction::Instruction(string in)
 
 void Ferry::Apply(Instruction i)
 {
-	switch (i.type)
-	{
-	case Instruction::Type::North:
-		y += i.value;
-		break;
-	case Instruction::Type::East:
-		x += i.value;
-		break;
-	case Instruction::Type::South:
-		y -= i.value;
-		break;
-	case Instruction::Type::West:
-		x -= i.value;
-		break;
-	case Instruction::Type::Left:
-		angle += i.value;
-		break;
-	case Instruction::Type::Right:
-		angle -= i.value;
-		break;
-	case Instruction::Type::Forward:
-		Apply(GetCardinalInstructionFromAngle(i.value));
-		break;
-	default:
-		throw 1;
-	}
-}
-
-Instruction Ferry::GetCardinalInstructionFromAngle(int value)
-{
-	auto NormalizedAngle = ((angle % 360) + 360) % 360;
-
-	Instruction::Type type;
-	switch (NormalizedAngle)
-	{
-	case 0:
-		type = Instruction::Type::East;
-		break;
-	case 90:
-		type = Instruction::Type::North;
-		break;
-	case 180:
-		type = Instruction::Type::West;
-		break;
-	case 270:
-		type = Instruction::Type::South;
-		break;
-	default:
-		throw 1;
+	if (i.type != Instruction::Type::Forward) {
+		waypoint.Apply(i, x, y);
+		return;
 	}
 
-	return Instruction(type, value);
+	x += i.value * waypoint.x;
+	y += i.value * waypoint.y;
 }
 
 void Day12::Run()
@@ -92,7 +48,69 @@ void Day12::Run()
 
 	for (auto i : instructions) {
 		f.Apply(i);
+		cout << i.source << "> Ferry: (" << f.x << ", " << f.y << ") WP: (" << f.waypoint.x << ", " << f.waypoint.y << ")" << endl;
 	}
 
 	cout << abs(f.x) + abs(f.y) << endl;
+}
+
+void Waypoint::Apply(Instruction i, int xRel, int yRel)
+{
+	switch (i.type)
+	{
+	case Instruction::Type::North:
+		y += i.value;
+		break;
+	case Instruction::Type::East:
+		x += i.value;
+		break;
+	case Instruction::Type::South:
+		y -= i.value;
+		break;
+	case Instruction::Type::West:
+		x -= i.value;
+		break;
+	case Instruction::Type::Left:
+		// fallthrough
+	case Instruction::Type::Right:
+		ApplyAngle(GetCounterClockwiseAngle(i), xRel, yRel);
+		break;
+	default:
+		throw 1;
+	}
+}
+
+int Waypoint::GetCounterClockwiseAngle(Instruction i)
+{
+	auto angle = i.type == Instruction::Type::Left ? i.value : (-1) * i.value;
+	return (angle + 360) % 360;
+}
+
+void Waypoint::ApplyAngle(int angle, int xRel, int yRel)
+{
+	int tmpX;
+	// Pivot
+	switch (angle)
+	{
+	case 0:
+		break;
+	case 90:
+		tmpX = x;
+		x = -y;
+		y = tmpX;
+		break;
+	case 180:
+		x = -x;
+		y = -y;
+		break;
+	case 270:
+		tmpX = x;
+		x = y;
+		y = -tmpX;
+		break;
+	case 360:
+		break;
+	default:
+		throw 1;
+	}
 }
