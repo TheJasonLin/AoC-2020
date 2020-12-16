@@ -56,11 +56,6 @@ Bus Problem::GetEarliestBus() const
 	return greedyBus;
 }
 
-long long Problem::GetMatchingTime() const
-{
-
-}
-
 int Bus::GetFirstDepartureAfter(int time) const
 {
 	auto quotient = time / id;

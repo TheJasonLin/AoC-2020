@@ -20,7 +20,6 @@ public:
 	Problem(vector<string> input);
 
 	Bus GetEarliestBus() const;
-	long long GetMatchingTime() const;
 };
 
 class Day13
